@@ -1,0 +1,497 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIN | Mantenimiento Industrial del Norte</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f1f5f9;color:#172b4d}
+button{cursor:pointer;border:0}
+.login{height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#071b35,#17629a)}
+.login-box{background:white;width:380px;padding:35px;border-radius:15px;text-align:center;box-shadow:0 10px 35px #0005}
+.logo{font-size:27px;font-weight:bold;color:#102c50;margin-bottom:10px}
+.login-box p{color:#64748b;margin-bottom:25px}
+.login-box input,.login-box select{width:100%;padding:12px;margin:8px 0;border:1px solid #cbd5e1;border-radius:7px}
+.btn{padding:11px 17px;border-radius:6px;color:white;background:#0879bd;font-weight:bold}
+.btn:hover{opacity:.85}
+.login .btn{width:100%;margin-top:15px}
+.error{color:#dc2626;font-size:13px;margin-top:10px}
+.app{display:none;min-height:100vh}
+.sidebar{width:225px;background:#102640;color:white;position:fixed;top:0;bottom:0;padding:20px 12px}
+.brand{font-size:21px;font-weight:bold;padding:10px;margin-bottom:28px}
+.brand small{display:block;font-size:10px;font-weight:normal;color:#a9c4dc}
+.menu button{width:100%;padding:13px 12px;background:transparent;color:#dce9f5;text-align:left;border-radius:6px;margin-bottom:5px;font-size:14px}
+.menu button:hover,.menu button.active{background:#1679b8;color:white}
+.menu i{margin-right:10px}
+.main{margin-left:225px}
+.topbar{height:60px;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 25px;box-shadow:0 2px 7px #0001}
+.topbar span{font-weight:bold}
+.content{padding:25px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.header h2{font-size:23px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:22px}
+.card{background:white;padding:20px;border-radius:10px;box-shadow:0 2px 8px #0001;border-top:4px solid #1478b9}
+.card small{color:#64748b}
+.card h2{font-size:27px;margin-top:10px}
+.green{border-color:#16a34a}.yellow{border-color:#eab308}.red{border-color:#dc2626}.blue{border-color:#1685c5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:white;border-radius:10px;padding:18px;margin-bottom:18px;box-shadow:0 2px 8px #0001}
+.panel h3{font-size:16px;margin-bottom:16px;color:#174675}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:11px 8px;text-align:left;border-bottom:1px solid #e2e8f0}
+th{background:#eff6fc;color:#244b70}
+.low{color:#d97706;font-weight:bold}
+.out{color:#dc2626;font-weight:bold}
+.ok{color:#15803d;font-weight:bold}
+.form{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.form input,.form select,.form textarea{padding:10px;border:1px solid #cbd5e1;border-radius:6px;flex:1;min-width:130px}
+.badge{padding:5px 8px;border-radius:5px;font-size:11px;font-weight:bold}
+.pending{background:#fef3c7;color:#92400e}
+.approved{background:#dcfce7;color:#166534}
+.rejected{background:#fee2e2;color:#991b1b}
+.actions button{padding:6px 9px;border-radius:5px;margin:2px;color:white}
+.edit{background:#1685c5}.delete{background:#dc2626}
+.greenbtn{background:#15803d;color:white;padding:8px 12px;border-radius:5px}
+.redbtn{background:#dc2626;color:white;padding:8px 12px;border-radius:5px}
+.bluebtn{background:#0879bd;color:white;padding:9px 13px;border-radius:5px}
+.hidden{display:none!important}
+.alert{padding:12px;background:#fff7d6;border-left:4px solid #eab308;margin-bottom:10px;border-radius:5px}
+.footer{padding:15px;text-align:center;color:#94a3b8;font-size:11px}
+            @@media(max-width:850px) {
+.sidebar{width:65px}.brand{font-size:0}.brand small{display:none}.menu button{font-size:0}.menu i{font-size:19px}
+.main{margin-left:65px}.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+<div class="login-box">
+<div class="logo"><i class="bi bi-gear-fill"></i> MIN</div>
+<p>Mantenimiento Industrial del Norte</p>
+
+<h3>Iniciar sesión</h3>
+
+<input id="usuario" placeholder="Usuario">
+<input id="password" type="password" placeholder="Contraseña">
+
+<button class="btn" onclick="iniciarSesion()">Ingresar</button>
+<div class="error" id="error"></div>
+
+<hr style="margin:20px 0">
+<small style="color:#64748b">
+Administrador: admin / 1234<br>
+Gerente: gerente / 1234<br>
+Técnico: tecnico / 1234
+</small>
+</div>
+</div>
+
+<!-- APLICACION -->
+<div class="app" id="app">
+
+<aside class="sidebar">
+<div class="brand"><i class="bi bi-gear-fill"></i> MIN
+<small>Mantenimiento Industrial del Norte</small></div>
+
+<div class="menu">
+<button class="active" onclick="mostrar('dashboard',this)"><i class="bi bi-house-fill"></i> Dashboard</button>
+<button onclick="mostrar('piezas',this)"><i class="bi bi-box-seam"></i> Piezas</button>
+<button onclick="mostrar('solicitudes',this)"><i class="bi bi-clipboard-check"></i> Solicitudes</button>
+<button onclick="mostrar('movimientos',this)"><i class="bi bi-arrow-left-right"></i> Movimientos</button>
+<button onclick="mostrar('reportes',this)"><i class="bi bi-bar-chart-fill"></i> Reportes</button>
+<button id="menuUsuarios" onclick="mostrar('usuarios',this)"><i class="bi bi-people-fill"></i> Usuarios</button>
+</div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+<span><i class="bi bi-geo-alt-fill"></i> Almacén Principal</span>
+<span id="sesion"></span>
+<button class="redbtn" onclick="cerrarSesion()">Salir <i class="bi bi-box-arrow-right"></i></button>
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+<div class="header">
+<h2>Dashboard <small style="font-size:14px;font-weight:normal">Control de Inventario</small></h2>
+</div>
+
+<div class="cards">
+<div class="card blue"><small>Total de piezas</small><h2 id="total">0</h2></div>
+<div class="card green"><small>En stock</small><h2 id="stock">0</h2></div>
+<div class="card yellow"><small>Stock bajo</small><h2 id="bajo">0</h2></div>
+<div class="card red"><small>Sin stock</small><h2 id="agotado">0</h2></div>
+</div>
+
+<div class="grid">
+<div class="panel">
+<h3>Resumen de inventario</h3>
+<div id="resumen"></div>
+</div>
+
+<div class="panel">
+<h3><i class="bi bi-exclamation-triangle-fill"></i> Alertas de inventario</h3>
+<div id="alertas"></div>
+</div>
+</div>
+
+<div class="panel">
+<h3>Últimos movimientos</h3>
+<div id="ultimos"></div>
+</div>
+</section>
+
+<!-- PIEZAS -->
+<section id="piezas" class="hidden">
+<div class="header"><h2>Gestión de piezas</h2></div>
+
+<div id="formPieza" class="panel">
+<h3>Registrar nueva pieza</h3>
+<div class="form">
+<input id="codigo" placeholder="Código">
+<input id="nombre" placeholder="Nombre de la pieza">
+<input id="categoria" placeholder="Categoría">
+<input id="cantidad" type="number" min="0" placeholder="Cantidad">
+<input id="ubicacion" placeholder="Ubicación">
+</div>
+<button class="bluebtn" onclick="guardarPieza()">Guardar pieza</button>
+</div>
+
+<div class="panel">
+<h3>Inventario de piezas</h3>
+<input id="buscar" placeholder="Buscar por código o nombre..." oninput="tablaPiezas()" style="padding:10px;width:100%;margin-bottom:15px;border:1px solid #cbd5e1;border-radius:6px">
+<div id="tablaPiezas"></div>
+</div>
+</section>
+
+<!-- SOLICITUDES -->
+<section id="solicitudes" class="hidden">
+<div class="header"><h2>Solicitudes de materiales</h2></div>
+
+<div class="panel" id="formSolicitud">
+<h3>Nueva solicitud de materiales</h3>
+<div class="form">
+<select id="piezaSolicitud"></select>
+<input id="cantidadSolicitud" type="number" min="1" placeholder="Cantidad">
+</div>
+<button class="bluebtn" onclick="solicitar()">Enviar solicitud</button>
+</div>
+
+<div class="panel">
+<h3>Listado de solicitudes</h3>
+<div id="tablaSolicitudes"></div>
+</div>
+</section>
+
+<!-- MOVIMIENTOS -->
+<section id="movimientos" class="hidden">
+<div class="header"><h2>Movimientos de inventario</h2></div>
+
+<div class="panel" id="formMovimiento">
+<h3>Registrar entrada de materiales</h3>
+<div class="form">
+<select id="piezaMovimiento"></select>
+<input id="cantidadMovimiento" type="number" min="1" placeholder="Cantidad">
+</div>
+<button class="bluebtn" onclick="entrada()">Registrar entrada</button>
+</div>
+
+<div class="panel">
+<h3>Historial de movimientos</h3>
+<div id="tablaMovimientos"></div>
+</div>
+</section>
+
+<!-- REPORTES -->
+<section id="reportes" class="hidden">
+<div class="header"><h2>Reportes de inventario</h2></div>
+<div class="cards">
+<div class="card blue"><small>Total de referencias</small><h2 id="rTotal">0</h2></div>
+<div class="card green"><small>Existencias</small><h2 id="rStock">0</h2></div>
+<div class="card yellow"><small>Stock bajo</small><h2 id="rBajo">0</h2></div>
+<div class="card red"><small>Agotadas</small><h2 id="rAgotado">0</h2></div>
+</div>
+<div class="panel">
+<h3>Inventario general</h3>
+<div id="reporteTabla"></div>
+<button class="bluebtn" onclick="window.print()">Imprimir reporte</button>
+</div>
+</section>
+
+<!-- USUARIOS -->
+<section id="usuarios" class="hidden">
+<div class="header"><h2>Administración de usuarios</h2></div>
+<div class="panel">
+<h3>Usuarios del sistema</h3>
+<div id="tablaUsuarios"></div>
+</div>
+</section>
+
+</div>
+<div class="footer">MIN - Sistema de Control de Inventario Industrial © 2026</div>
+</main>
+</div>
+
+<script>
+
+// USUARIOS DEL SISTEMA
+const usuarios=[
+{usuario:"admin",password:"1234",nombre:"Administrador",rol:"Administrador"},
+{usuario:"gerente",password:"1234",nombre:"Gerente",rol:"Gerente"},
+{usuario:"tecnico",password:"1234",nombre:"Técnico",rol:"Técnico"}
+];
+
+let actual=null;
+let editarId=null;
+
+// INVENTARIO INICIAL
+const inicial=[
+["P001","Sensor inductivo","Sensores",15,"Estante A1"],
+["P002","Fusible 10 A","Eléctrico",50,"Estante A2"],
+["P003","Motor DC 24 V","Motores",4,"Estante B1"],
+["P004","Sensor óptico","Sensores",2,"Estante B2"],
+["P005","Banda industrial","Transmisión",0,"Estante C1"],
+["P006","Rodamiento 6001","Mecánica",3,"Estante C2"],
+["P007","Válvula neumática","Neumática",20,"Estante D1"],
+["P008","Bomba hidráulica","Hidráulica",8,"Estante D2"],
+["P009","Contactor 220 V","Eléctrico",12,"Estante A3"],
+["P010","Cable industrial","Eléctrico",30,"Estante A4"],
+["P011","Filtro de aire","Neumática",25,"Estante D3"],
+["P012","Engrane metálico","Mecánica",6,"Estante C3"],
+["P013","Correa de transmisión","Transmisión",18,"Estante C4"],
+["P014","Motor trifásico","Motores",5,"Estante B3"],
+["P015","Manómetro","Hidráulica",14,"Estante D4"],
+["P016","Tornillo industrial","Mecánica",100,"Estante C5"],
+["P017","Sensor de presión","Sensores",9,"Estante B4"],
+["P018","Relevador eléctrico","Eléctrico",40,"Estante A5"],
+["P019","Cilindro neumático","Neumática",7,"Estante D5"],
+["P020","Acoplamiento flexible","Mecánica",11,"Estante C6"]
+];
+
+let piezas=JSON.parse(localStorage.getItem("minPiezas"))||inicial.map((p,i)=>({id:i+1,codigo:p[0],nombre:p[1],categoria:p[2],cantidad:p[3],ubicacion:p[4],minimo:5}));
+let solicitudes=JSON.parse(localStorage.getItem("minSolicitudes"))||[];
+let movimientos=JSON.parse(localStorage.getItem("minMovimientos"))||[];
+
+function guardar(){
+localStorage.setItem("minPiezas",JSON.stringify(piezas));
+localStorage.setItem("minSolicitudes",JSON.stringify(solicitudes));
+localStorage.setItem("minMovimientos",JSON.stringify(movimientos));
+}
+
+function iniciarSesion(){
+let u=document.getElementById("usuario").value.trim();
+let p=document.getElementById("password").value;
+let encontrado=usuarios.find(x=>x.usuario===u&&x.password===p);
+
+if(!encontrado){
+document.getElementById("error").textContent="Usuario o contraseña incorrectos";
+return;
+}
+
+actual=encontrado;
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
+document.getElementById("sesion").textContent=actual.nombre+" | "+actual.rol;
+
+document.getElementById("menuUsuarios").classList.toggle("hidden",actual.rol!=="Administrador");
+document.getElementById("formPieza").classList.toggle("hidden",actual.rol!=="Administrador");
+document.getElementById("formSolicitud").classList.toggle("hidden",actual.rol!=="Técnico");
+document.getElementById("formMovimiento").classList.toggle("hidden",actual.rol!=="Administrador");
+
+actualizar();
+mostrar("dashboard",document.querySelector(".menu button"));
+}
+
+function cerrarSesion(){
+actual=null;
+document.getElementById("app").style.display="none";
+document.getElementById("login").style.display="flex";
+document.getElementById("password").value="";
+}
+
+function mostrar(id,boton){
+document.querySelectorAll(".content section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
+if(boton)boton.classList.add("active");
+actualizar();
+}
+
+function actualizar(){
+guardar();
+let total=piezas.reduce((s,p)=>s+p.cantidad,0);
+let bajo=piezas.filter(p=>p.cantidad>0&&p.cantidad<=p.minimo).length;
+let agotado=piezas.filter(p=>p.cantidad===0).length;
+let disponibles=piezas.filter(p=>p.cantidad>0).length;
+
+document.getElementById("total").textContent=piezas.length;
+document.getElementById("stock").textContent=total;
+document.getElementById("bajo").textContent=bajo;
+document.getElementById("agotado").textContent=agotado;
+
+document.getElementById("rTotal").textContent=piezas.length;
+document.getElementById("rStock").textContent=total;
+document.getElementById("rBajo").textContent=bajo;
+document.getElementById("rAgotado").textContent=agotado;
+
+document.getElementById("resumen").innerHTML=
+`<p>🟢 Piezas con existencias: <b>${disponibles}</b></p>
+<p>🟡 Piezas con stock bajo: <b>${bajo}</b></p>
+<p>🔴 Piezas agotadas: <b>${agotado}</b></p>`;
+
+let alertas=piezas.filter(p=>p.cantidad<=p.minimo);
+document.getElementById("alertas").innerHTML=alertas.length?
+alertas.map(p=>`<div class="alert"><b>${p.codigo}</b> - ${p.nombre}: ${p.cantidad} unidades</div>`).join(""):"<p class='ok'>No hay alertas de inventario.</p>";
+
+document.getElementById("ultimos").innerHTML=movimientos.slice(-5).reverse().map(m=>`<p>${m.tipo} | ${m.pieza} | ${m.cantidad} unidades | ${m.fecha}</p>`).join("")||"Sin movimientos registrados";
+
+tablaPiezas();
+tablaSolicitudes();
+tablaMovimientos();
+reporte();
+llenarSelects();
+tablaUsuarios();
+}
+
+function guardarPieza(){
+let codigo=document.getElementById("codigo").value.trim();
+let nombre=document.getElementById("nombre").value.trim();
+let categoria=document.getElementById("categoria").value.trim();
+let cantidad=Number(document.getElementById("cantidad").value);
+let ubicacion=document.getElementById("ubicacion").value.trim();
+
+if(!codigo||!nombre||!categoria||!ubicacion||document.getElementById("cantidad").value===""||!Number.isInteger(cantidad)||cantidad<0){
+alert("Completa todos los campos con datos válidos.");
+return;
+}
+
+if(piezas.some(p=>p.codigo.toLowerCase()===codigo.toLowerCase())){
+alert("Ya existe una pieza con ese código.");
+return;
+}
+
+piezas.push({id:Date.now(),codigo,nombre,categoria,cantidad,ubicacion,minimo:5});
+movimientos.push({tipo:"Entrada inicial",pieza:nombre,cantidad,usuario:actual.nombre,fecha:new Date().toLocaleString()});
+["codigo","nombre","categoria","cantidad","ubicacion"].forEach(id=>document.getElementById(id).value="");
+actualizar();
+alert("Pieza registrada correctamente.");
+}
+
+function tablaPiezas(){
+let q=(document.getElementById("buscar")?.value||"").toLowerCase();
+let lista=piezas.filter(p=>(p.codigo+" "+p.nombre+" "+p.categoria).toLowerCase().includes(q));
+document.getElementById("tablaPiezas").innerHTML=`<table><thead><tr><th>Código</th><th>Descripción</th><th>Categoría</th><th>Stock</th><th>Ubicación</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+${lista.map(p=>`<tr><td>${p.codigo}</td><td>${p.nombre}</td><td>${p.categoria}</td><td>${p.cantidad}</td><td>${p.ubicacion}</td><td>${estado(p)}</td><td class="actions">${actual?.rol==="Administrador"?`<button class="edit" onclick="editarPieza(${p.id})">Editar</button><button class="delete" onclick="eliminarPieza(${p.id})">X</button>`:"Consulta"}</td></tr>`).join("")}
+</tbody></table>`;
+}
+
+function estado(p){
+if(p.cantidad===0)return '<span class="out">Agotado</span>';
+if(p.cantidad<=p.minimo)return '<span class="low">Stock bajo</span>';
+return '<span class="ok">Disponible</span>';
+}
+
+function editarPieza(id){
+let p=piezas.find(x=>x.id===id);
+let cantidad=prompt("Nueva cantidad:",p.cantidad);
+if(cantidad===null)return;
+if(!Number.isInteger(Number(cantidad))||Number(cantidad)<0){alert("Cantidad no válida");return;}
+let nombre=prompt("Nombre:",p.nombre);
+if(nombre===null)return;
+let ubicacion=prompt("Ubicación:",p.ubicacion);
+if(ubicacion===null)return;
+p.cantidad=Number(cantidad);
+p.nombre=nombre;
+p.ubicacion=ubicacion;
+actualizar();
+alert("Pieza actualizada.");
+}
+
+function eliminarPieza(id){
+if(!confirm("¿Deseas eliminar esta pieza?"))return;
+piezas=piezas.filter(p=>p.id!==id);
+actualizar();
+}
+
+function llenarSelects(){
+let opciones=piezas.map(p=>`<option value="${p.id}">${p.codigo} - ${p.nombre} (Stock: ${p.cantidad})</option>`).join("");
+document.getElementById("piezaSolicitud").innerHTML=opciones;
+document.getElementById("piezaMovimiento").innerHTML=opciones;
+}
+
+function solicitar(){
+let id=Number(document.getElementById("piezaSolicitud").value);
+let cantidad=Number(document.getElementById("cantidadSolicitud").value);
+let p=piezas.find(x=>x.id===id);
+if(!p||!Number.isInteger(cantidad)||cantidad<1){alert("Ingresa una cantidad válida.");return;}
+if(cantidad>p.cantidad){alert("No hay suficientes existencias para esa solicitud.");return;}
+
+solicitudes.push({id:Date.now(),piezaId:id,codigo:p.codigo,pieza:p.nombre,cantidad,tecnico:actual.nombre,estado:"Pendiente",fecha:new Date().toLocaleString()});
+document.getElementById("cantidadSolicitud").value="";
+actualizar();
+alert("Solicitud enviada al gerente.");
+}
+
+function tablaSolicitudes(){
+let lista=actual?.rol==="Técnico"?solicitudes.filter(s=>s.tecnico===actual.nombre):solicitudes;
+document.getElementById("tablaSolicitudes").innerHTML=`<table><tr><th>Folio</th><th>Técnico</th><th>Pieza</th><th>Cantidad</th><th>Estado</th><th>Acciones</th></tr>
+${lista.map(s=>`<tr><td>${s.id}</td><td>${s.tecnico}</td><td>${s.pieza}</td><td>${s.cantidad}</td><td><span class="badge ${s.estado==="Pendiente"?"pending":s.estado==="Aprobada"?"approved":"rejected"}">${s.estado}</span></td><td>${actual?.rol==="Gerente"&&s.estado==="Pendiente"?`<button class="greenbtn" onclick="resolver(${s.id},true)">Aprobar</button><button class="redbtn" onclick="resolver(${s.id},false)">Rechazar</button>`:"-"}</td></tr>`).join("")}</table>`;
+}
+
+function resolver(id,aprobar){
+let s=solicitudes.find(x=>x.id===id);
+if(!s||s.estado!=="Pendiente")return;
+let p=piezas.find(x=>x.id===s.piezaId);
+if(aprobar){
+if(!p||p.cantidad<s.cantidad){alert("No hay existencias suficientes.");return;}
+p.cantidad-=s.cantidad;
+s.estado="Aprobada";
+movimientos.push({tipo:"Salida",pieza:p.nombre,cantidad:s.cantidad,usuario:actual.nombre,fecha:new Date().toLocaleString()});
+}else{s.estado="Rechazada";}
+actualizar();
+alert(aprobar?"Solicitud aprobada. Inventario actualizado.":"Solicitud rechazada.");
+}
+
+function entrada(){
+let p=piezas.find(x=>x.id===Number(document.getElementById("piezaMovimiento").value));
+let c=Number(document.getElementById("cantidadMovimiento").value);
+if(!p||!Number.isInteger(c)||c<1){alert("Ingresa una cantidad válida.");return;}
+p.cantidad+=c;
+movimientos.push({tipo:"Entrada",pieza:p.nombre,cantidad:c,usuario:actual.nombre,fecha:new Date().toLocaleString()});
+document.getElementById("cantidadMovimiento").value="";
+actualizar();
+alert("Entrada registrada.");
+}
+
+function tablaMovimientos(){
+document.getElementById("tablaMovimientos").innerHTML=`<table><tr><th>Tipo</th><th>Pieza</th><th>Cantidad</th><th>Responsable</th><th>Fecha</th></tr>
+${movimientos.slice().reverse().map(m=>`<tr><td>${m.tipo}</td><td>${m.pieza}</td><td>${m.cantidad}</td><td>${m.usuario}</td><td>${m.fecha}</td></tr>`).join("")}</table>`;
+}
+
+function reporte(){
+document.getElementById("reporteTabla").innerHTML=`<table><tr><th>Código</th><th>Nombre</th><th>Stock</th><th>Ubicación</th><th>Estado</th></tr>
+${piezas.map(p=>`<tr><td>${p.codigo}</td><td>${p.nombre}</td><td>${p.cantidad}</td><td>${p.ubicacion}</td><td>${estado(p)}</td></tr>`).join("")}</table>`;
+}
+
+function tablaUsuarios(){
+document.getElementById("tablaUsuarios").innerHTML=`<table><tr><th>Usuario</th><th>Nombre</th><th>Rol</th></tr>
+${usuarios.map(u=>`<tr><td>${u.usuario}</td><td>${u.nombre}</td><td>${u.rol}</td></tr>`).join("")}</table>`;
+}
+
+</script>
+</body>
+</html>
